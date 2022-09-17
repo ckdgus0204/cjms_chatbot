@@ -1,4 +1,3 @@
-from types import NoneType
 import requests
 from bs4 import BeautifulSoup
 
@@ -9,11 +8,15 @@ response = requests.get(url)                                                    
 if response.status_code == 200:                                                                                                     #If GET request is success
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    date = soup.select_one('#usm-content-body-id > ul > li:nth-child(1)').get_text()                                                #Get date
-    lunch_menu = soup.select_one('#usm-content-body-id > ul.tch-lnc-list > li.tch-lnc-wrap > dl > dd.tch-lnc > ul').get_text()      #Get menu
+    date = soup.select_one('#usm-content-body-id > ul > li:nth-child(1)')                                                           #Get date
+    lunch_menu = soup.select_one('#usm-content-body-id > ul.tch-lnc-list > li.tch-lnc-wrap > dl > dd.tch-lnc > ul')                 #Get menu
     if lunch_menu == None:                                                                                                          #If menu is not exist
-        lunch_menu = '식단이 없습니다.'
-    crawled_data = date + '\n' + lunch_menu                                                                                         #Merge crawled data and formatting
+        lunch_menu = '\n식단이 없습니다.\n'
+        crawled_data = date.get_text() + '\n' + lunch_menu
+
+    else:
+        crawled_data = date.get_text() + '\n' + lunch_menu.get_text()                                                               #Merge crawled data and formatting
+        
     print(crawled_data)                                                                                                             #Print crawled data
 
 else :                                                                                                                              #If GET request is fail
